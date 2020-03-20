@@ -63,9 +63,9 @@ from pydfs_lineup_optimizer import Site, Sport, get_optimizer, CSVLineupExporter
 import pandas as pd
 
 optimizer = get_optimizer(Site.DRAFTKINGS, Sport.FOOTBALL)
-optimizer.load_players_from_csv("/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/afl_moneyball_data_v2.csv")
+optimizer.load_players_from_csv("/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/afl_moneyball_data_v3.csv")
 
-x=50
+x=1
 lineups = CSVLineupExporter(optimizer.optimize(n=x,max_exposure=0.90,randomness=True))
 lineups.export("/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/afl_moneyball_upload.csv")
 
@@ -77,8 +77,27 @@ afl_mod = afl.drop(['FPPG', 'Budget'] , axis='columns')
 #Compute exposure
 print(afl_mod.stack().value_counts()/x)
 
+cleaned = pd.read_csv("/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/afl_moneyball_upload.csv")
+cleaned.rename(columns = {'MID.1':'MID_1', 'FWD.1':'FWD_1', 'MID.2':'MID_2','DEF.1':'DEF_1'}, inplace = True) 
+cleaned.info()
+cleaned['FWD'] = cleaned.FWD.str.replace("(", " (")
+cleaned['FWD_1'] = cleaned.FWD_1.str.replace("(", " (")
+cleaned['RU'] = cleaned.RU.str.replace("(", " (")
+cleaned['MID'] = cleaned.MID.str.replace("(", " (")
+cleaned['MID_1'] = cleaned.MID_1.str.replace("(", " (")
+cleaned['MID_2'] = cleaned.MID_2.str.replace("(", " (")
+cleaned['DEF'] = cleaned.DEF.str.replace("(", " (")
+cleaned['DEF_1'] = cleaned.DEF_1.str.replace("(", " (")
+cleaned['FLEX'] = cleaned.FLEX.str.replace("(", " (")
+cleaned = cleaned.set_index('FWD')
+cleaned.to_csv("/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/afl_moneyball_upload_cleaned.csv")
 
-
+#%%
+csv_input = pd.read_csv("/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/afl_moneyball_upload_cleaned.csv")
+csv_input.insert(0,'Contest id', 'c8d1b2cb-c93c-4b92-a458-0e7a460afcd6') #mini contest number
+csv_input.insert(0,'Contest id', '8cd6a8ea-1e1a-4db3-a10f-2d91e98623af') #main contest number
+csv_input.to_csv("/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/afl_upload_mini.csv", index=False)
+csv_input.to_csv('data/fantasy/afl_upload_main.csv', index=False)
 # %%
 x=50
 lineups = CSVLineupExporter(optimizer.optimize(n=x,max_exposure=0.65,randomness=True))
