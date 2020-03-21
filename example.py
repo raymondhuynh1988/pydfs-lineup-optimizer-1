@@ -57,7 +57,7 @@ afl = pd.read_csv("/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/a
 afl.head()
 #Drop columns not required for exposure
 afl_mod = afl.drop(['FPPG', 'Budget'] , axis='columns')
-
+pd.options.display.float_format = '{:.2f}'.format
 #Compute exposure
 print(afl_mod.stack().value_counts()/x)
 
