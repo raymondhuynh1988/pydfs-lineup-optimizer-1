@@ -36,16 +36,16 @@ from pydfs_lineup_optimizer import Site, Sport, get_optimizer, CSVLineupExporter
 import pandas as pd
 
 optimizer = get_optimizer(Site.FANDUEL, Sport.FOOTBALL)
-optimizer.load_players_from_csv("/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/afl_ds_data.csv")
+optimizer.load_players_from_csv('/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/cleaned_afl_ds_data.csv')
 
 #player groups
-group_1 = PlayersGroup([optimizer.get_player_by_name(name) for name in ('Kade Simpson', 'Sam Docherty')], max_exposure=0.1)
-group_2 = PlayersGroup([optimizer.get_player_by_name(name) for name in ('Sam Docherty', 'Will Setterfield')], max_exposure=0.1)
-group_3 = PlayersGroup([optimizer.get_player_by_name(name) for name in ('Sam Docherty', 'Nic Newman')], max_exposure=0.1)
-optimizer.add_stack(Stack([group_1, group_2, group_3]))
+#group_1 = PlayersGroup([optimizer.get_player_by_name(name) for name in ('Kade Simpson', 'Sam Docherty')], max_exposure=0.1)
+#group_2 = PlayersGroup([optimizer.get_player_by_name(name) for name in ('Sam Docherty', 'Will Setterfield')], max_exposure=0.1)
+#group_3 = PlayersGroup([optimizer.get_player_by_name(name) for name in ('Sam Docherty', 'Nic Newman')], max_exposure=0.1)
+#optimizer.add_stack(Stack([group_1, group_2, group_3]))
 
-x=50
-lineups = CSVLineupExporter(optimizer.optimize(n=x,max_exposure=0.70,randomness=True))
+x=20
+lineups = CSVLineupExporter(optimizer.optimize(n=x,max_exposure=1.0,randomness=True))
 lineups.export("/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/afl_ds_upload.csv")
 
 # Datasets from folder Data
@@ -63,10 +63,10 @@ from pydfs_lineup_optimizer import Site, Sport, get_optimizer, CSVLineupExporter
 import pandas as pd
 
 optimizer = get_optimizer(Site.DRAFTKINGS, Sport.FOOTBALL)
-optimizer.load_players_from_csv("/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/afl_moneyball_data_v3.csv")
+optimizer.load_players_from_csv("/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/afl_moneyball_data.csv")
 
-x=1
-lineups = CSVLineupExporter(optimizer.optimize(n=x,max_exposure=0.90,randomness=True))
+x=55
+lineups = CSVLineupExporter(optimizer.optimize(n=x,max_exposure=0.65,randomness=True))
 lineups.export("/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/afl_moneyball_upload.csv")
 
 # Datasets from folder Data
@@ -95,9 +95,9 @@ cleaned.to_csv("/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/afl_
 #%%
 csv_input = pd.read_csv("/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/afl_moneyball_upload_cleaned.csv")
 csv_input.insert(0,'Contest id', 'c8d1b2cb-c93c-4b92-a458-0e7a460afcd6') #mini contest number
-csv_input.insert(0,'Contest id', '8cd6a8ea-1e1a-4db3-a10f-2d91e98623af') #main contest number
+csv_input.insert(0,'Contest id', '2b26156b-dba3-43a9-949c-829249214d77') #main contest number
 csv_input.to_csv("/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/afl_upload_mini.csv", index=False)
-csv_input.to_csv('data/fantasy/afl_upload_main.csv', index=False)
+csv_input.to_csv("/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/afl_upload_main.csv", index=False)
 # %%
 x=50
 lineups = CSVLineupExporter(optimizer.optimize(n=x,max_exposure=0.65,randomness=True))
