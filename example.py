@@ -29,6 +29,7 @@ import os
 import matplotlib.pyplot as plt
 import requests
 from urllib.request import urlopen
+import csv
 
 #%%
 #DraftStars AFL Lineup Generator
@@ -38,14 +39,16 @@ import pandas as pd
 optimizer = get_optimizer(Site.FANDUEL, Sport.FOOTBALL)
 optimizer.load_players_from_csv('/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/cleaned_afl_ds_data.csv')
 
+
 #player groups
 #group_1 = PlayersGroup([optimizer.get_player_by_name(name) for name in ('Kade Simpson', 'Sam Docherty')], max_exposure=0.1)
 #group_2 = PlayersGroup([optimizer.get_player_by_name(name) for name in ('Sam Docherty', 'Will Setterfield')], max_exposure=0.1)
 #group_3 = PlayersGroup([optimizer.get_player_by_name(name) for name in ('Sam Docherty', 'Nic Newman')], max_exposure=0.1)
 #optimizer.add_stack(Stack([group_1, group_2, group_3]))
+#optimizer.add_stack(TeamStack(4, for_teams=['Port Adelaide']))
+x=34
+lineups = CSVLineupExporter(optimizer.optimize(n=x,max_exposure=0.6,randomness=True))
 
-x=20
-lineups = CSVLineupExporter(optimizer.optimize(n=x,max_exposure=1.0,randomness=True))
 lineups.export("/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/afl_ds_upload.csv")
 
 # Datasets from folder Data
@@ -54,8 +57,19 @@ afl = pd.read_csv("/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/a
 afl.head()
 #Drop columns not required for exposure
 afl_mod = afl.drop(['FPPG', 'Budget'] , axis='columns')
+
 #Compute exposure
 print(afl_mod.stack().value_counts()/x)
+
+#%%
+#Add batch ID to File
+csv_input = pd.read_csv("/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/afl_ds_upload.csv")
+csv_input.columns = pd.MultiIndex.from_tuples(zip(['Batch ID', 'SLrh2hTI','','','','','','','','',''], csv_input.columns))
+csv_input.head()
+pd.options.display.float_format = '{:.0f}'.format
+csv_input.to_csv('/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/afl_ds_upload.csv', index=False)
+
+
 
 # %%
 #Load AFl Data for Moneyball
@@ -66,7 +80,7 @@ optimizer = get_optimizer(Site.DRAFTKINGS, Sport.FOOTBALL)
 optimizer.load_players_from_csv("/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/afl_moneyball_data.csv")
 
 x=55
-lineups = CSVLineupExporter(optimizer.optimize(n=x,max_exposure=0.65,randomness=True))
+lineups = CSVLineupExporter(optimizer.optimize(n=x,max_exposure=1.0,randomness=True))
 lineups.export("/Users/raymond.huynh/Desktop/python/Ray_Python/data/fantasy/afl_moneyball_upload.csv")
 
 # Datasets from folder Data
